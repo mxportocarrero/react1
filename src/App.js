@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 
 import { CardList } from "./components/card-list/card-list.component";
+import { SearchBox } from "./components/search-box/search-box.component";
 
 class App extends Component {
   constructor() {
@@ -9,8 +10,10 @@ class App extends Component {
 
     this.state = {
       monsters: [],
-      string: "Hello React from Maxi",
+      searchField: "",
     };
+
+    // this.onSearchChange = this.onSearchChange.bind(this);
   }
 
   componentDidMount() {
@@ -19,15 +22,25 @@ class App extends Component {
       .then((users) => this.setState({ monsters: users }));
   }
 
-  onSearchChange() {
-    console.log("onSearchChange");
-  }
+  onSearchChange = (e) => {
+    this.setState({ searchField: e.target.value });
+  };
 
   render() {
-    const { monsters } = this.state;
+    const { monsters, searchField } = this.state;
+
+    const filteredMonsters = monsters.filter((monster) =>
+      monster.name.toLowerCase().includes(searchField.toLocaleLowerCase())
+    );
+
     return (
       <div className="App">
-        <CardList monsters={monsters} />
+        <h1>Maxi Monsters</h1>
+        <SearchBox
+          placeholder="Search monster"
+          handleChange={this.onSearchChange}
+        />
+        <CardList monsters={filteredMonsters} />
       </div>
     );
   }
